@@ -1,0 +1,27 @@
+import express, { Express, Router } from 'express';
+import cookieParser from 'cookie-parser';
+import { PORT } from './schema/enviroments.schema';
+import cors from 'cors'; // Import cors package
+
+export class ExpressServer {
+  app: Express;
+  PORT: number;
+  constructor() {
+    this.app = express();
+    this.PORT = PORT;
+    this.app.use(express.json());
+    this.app.use(cookieParser());
+    this.app.use(cors()); // Use cors middleware
+  }
+  addRouter(routes: Router) {
+    this.app.use(routes);
+  }
+  use(path: string, routes: any) {
+    this.app.use(path, routes);
+  }
+  listen() {
+    this.app.listen(this.PORT, () => {
+      console.log(`Server is running on http://localhost:${this.PORT}`);
+    });
+  }
+}

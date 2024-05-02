@@ -1,0 +1,534 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Prescricao {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  titulo      String
+  data        String
+  descricao   String  @default("")
+  posologia   String  @default("")
+  suplementos Json[]  @default([])
+  patient     Patient @relation(fields: [patientId], references: [id])
+  patientId   String  @db.ObjectId
+}
+
+model AnonymousEvent {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String  @db.ObjectId
+  User     User    @relation(fields: [userId], references: [id])
+  name     String
+  phone    String
+  title    String // Nome do paciente
+  start    String
+  end      String?
+  status   String? @default("Aguardando Confirmação")
+  duration Int
+
+  email         String
+  category      String  @default("reconsulta")
+  cpf           String
+  biologicalSex String? @default("Feminino")
+  birthday      String
+}
+
+model Answers {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  patient         Patient @relation(fields: [patientId], references: [id])
+  questionaryName String
+  data            Json[]
+  patientId       String  @db.ObjectId
+  result          String?
+}
+
+model ChallengeAPI {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  name      String
+  email     String   @unique
+}
+
+model Cardapio {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  schoolName  String
+  schoolLogo  String
+  userLogo    String
+  dayHours    String[] @default([])
+  rows        Json[]   @default([])
+  observation String   @default("")
+  information String   @default("")
+  // user        User     @relation(fields: [userId], references: [id])
+  // userId      String   @unique @db.ObjectId
+  Scholl      Scholl?  @relation(fields: [schollId], references: [id])
+  schollId    String   @db.ObjectId
+}
+
+model ChildGrowthStandards {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String?  @db.ObjectId
+  patient   Patient? @relation(fields: [patientId], references: [id])
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId String?  @db.ObjectId
+  birthday  String
+  name      String
+
+  title         String
+  age           String
+  biologicalSex String
+  height        Float
+  weight        Float
+  imc           Float
+  height_age    Json
+  weight_age    Json
+  imc_age       Json
+}
+
+model Config {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  purpose String @unique
+  data    Json
+}
+
+model Event {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  User      User?   @relation(fields: [userId], references: [id])
+  userId    String? @db.ObjectId
+  patient   Patient @relation(fields: [patientId], references: [id])
+  patientId String  @db.ObjectId
+
+  title    String // Nome do paciente
+  start    String
+  end      String?
+  status   String? @default("Aguardando Confirmação")
+  // editable Boolean? @default(false)
+  duration Int
+  //
+  email    String
+  cpf      String
+  birthday String
+  phone    String
+  category String  @default("reconsulta")
+
+  biologicalSex String? @default("Feminino")
+}
+
+model ExameAvaliacaoAntropometrica {
+  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
+  date                DateTime @default(now())
+  patient             Patient  @relation(fields: [patientId], references: [id])
+  patientId           String   @db.ObjectId
+  height              Float
+  weight              Float
+  imc                 Float
+  title               String
+  MassaGorda          Float
+  MassaMagra          Float
+  DensidadeCorporal   Float
+  PesoMuscular        Float
+  PesoOsseo           Float
+  PesoResidual        Float
+  RazaoCinturaQuadril Float
+  AreaMusculardoBraco Float
+  MassaGordaKG        Float
+  MassaMagraKG        Float
+  photos              String[]
+  anexo               String?
+  extraInfo           Json
+}
+
+model ExameGastoEnergetico {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  date      DateTime @default(now())
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId String   @db.ObjectId
+
+  protocol      String
+  activityLevel String
+  MET           String
+  VENTA         String
+  TBM           String
+  GET           String
+  VentaPeso     String? @default("")
+  VentaDias     String? @default("")
+  ListMets      Json[]  @default([])
+  mass          String
+  option        String? @default("nenhuma")
+  situation     String? @default("")
+  weekDuration  Int?    @default(0)
+}
+
+model Finance {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  date String @unique()
+
+  movimentation   Json[]  @default([])
+  User            User?   @relation(fields: [userId], references: [id])
+  userId          String? @db.ObjectId
+  valorConsulta   String  @default("")
+  valorReconsulta String  @default("")
+}
+
+model FoodPlan {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  date      DateTime @default(now())
+  //user         User     @relation(fields: [userNickname], references: [nickname])
+  // userNickname String   @unique
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId String   @db.ObjectId
+  type      String   @default("plano")
+
+  title     String
+  foodPlans Json[]
+  //  User      User?   @relation(fields: [userId], references: [id])
+  //userId    String? @db.ObjectId
+}
+
+model Recipe {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+  title  String
+  foods  Json[]
+}
+
+model LaboratoryExam {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  list   Json[] @default([])
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+}
+
+model ListMeals {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  user      User   @relation(fields: [userId], references: [id])
+  userId    String @unique @db.ObjectId
+  savedList Json[] @default([])
+}
+
+model Log {
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  date   DateTime @default(now())
+  user   User?    @relation(fields: [userId], references: [id])
+  userId String?  @unique @db.ObjectId
+  action String
+  data   Json?
+}
+
+model LogError {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  date     DateTime @default(now())
+  user     User?    @relation(fields: [userId], references: [id])
+  userId   String?  @unique @db.ObjectId
+  action   String
+  severity String
+  data     Json?
+}
+
+model MyFoods {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  foods  Json[] @default([])
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+}
+
+model Notes {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  patient   Patient[]
+  patientId String    @db.ObjectId
+  text      String
+}
+
+model Patient {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  active    Boolean  @default(true)
+  cpf       String   @default("")
+  User      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.ObjectId
+
+  name          String
+  email         String @unique
+  phone         String @unique
+  birthday      String
+  weight        Float  @default(0)
+  height        Float  @default(0)
+  age           Float
+  bodyMassIndex Float  @default(1)
+  biologicalSex String
+
+  isPregnant            Boolean? @default(false)
+  weeksPregnant         Int?     @default(0)
+  genderIdentity        String?
+  appointmentReasoning  String?  @default("")
+  appointmentComments   String?  @default("")
+  weightBeforePregnancy Float?   @default(0)
+  guardiansName         String?  @default("")
+
+  Event                Event[]
+  Notes                Notes?                         @relation(fields: [notesId], references: [id])
+  notesId              String?                        @db.ObjectId
+  answers              Answers[]
+  ExameAntropometrico  ExameAvaliacaoAntropometrica[]
+  gastoEnergeticoExam  ExameGastoEnergetico[]
+  foodPlan             FoodPlan[]
+  childGrowthStandards ChildGrowthStandards[]
+  Vaccine              Vaccine[]
+  Annotation           Annotation[]
+  Medicine             Medicine[]
+  Prescricao           Prescricao[]
+
+  codeApp String
+  password String @default("")
+}
+
+model Preferences {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  User       User   @relation(fields: [userId], references: [id])
+  userId     String @unique @db.ObjectId
+  menus      Json
+  language   String @default("pt-BR")
+  theme      String @default("light")
+  timeZone   String @default("America/Sao_Paulo")
+  dateFormat String @default("DD/MM/YYYY")
+  timeFormat String @default("HH:mm")
+  currency   String @default("BRL")
+  country    String @default("BR")
+  number     String @default("0,0.00")
+}
+
+model PreparationCost {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  // user           User   @relation(fields: [userId], references: [id])
+  // userId         String @unique @db.ObjectId
+  scholl         Scholl @relation(fields: [schollId], references: [id])
+  tableItems     Json[]
+  total          Float
+  countStudents  Float
+  countsForMonth Float
+  monthlyCost    Float
+  title          String
+  schollId       String @db.ObjectId
+}
+
+model PublicSchedule {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  User   User   @relation(fields: [userId], references: [id])
+  userId String @unique @db.ObjectId
+
+  firstAppointmentDuration String @default("01:00")
+  appointmentDuration      String @default("01:00")
+
+  daysOfWeek Json[]
+}
+
+model Questionary {
+  id              String  @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  questions       Json?
+  questionsCustom Json[]
+  active          Boolean @default(true)
+  User            User?   @relation(fields: [userId], references: [id])
+  userId          String? @db.ObjectId
+}
+
+//remover este model
+model Tables {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String? @db.ObjectId
+  user      User?   @relation(fields: [userId], references: [id])
+  tableName String
+  isPublic  Boolean @default(false)
+
+  nutrorio    String
+  author      String
+  name        String?
+  energiaKcal Float?
+
+  // Medida
+  tipo           String?
+  nomeMedida     String?
+  valorEmGramas  Float?
+  multiplicador  Float?
+  //fenilalanina   Float?
+  macronutrients Json
+  micronutrients Json
+
+  quantidade         Float?
+  umidade            Float?
+  energiaKJ          Float?
+  colesterol         Float?
+  cinzas             Float?
+  gordPolinsaturada  Float?
+  gordMonoinsaturada Float?
+  gordSaturadas      Float?
+  acidosGraxos120    Float?
+  acidosGraxos140    Float?
+  acidosGraxos160    Float?
+  acidosGraxos180    Float?
+  acidosGraxos200    Float?
+  acidosGraxos220    Float?
+  acidosGraxos240    Float?
+  acidosGraxos141    Float?
+  acidosGraxos161    Float?
+  acidosGraxos181    Float?
+  acidosGraxos201    Float?
+  acidosGraxos182n6  Float?
+  acidosGraxos183n3  Float?
+  acidosGraxos204    Float?
+  acidosGraxos205    Float?
+  acidosGraxos225    Float?
+  acidosGraxos226    Float?
+  acidosGraxos181t   Float?
+  acidosGraxos182t   Float?
+}
+
+model User {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  nickname       String  @unique
+  email          String  @unique
+  name           String
+  surname        String
+  password       String
+  birthday       String
+  phoneNumber    String
+  workField      String
+  gender         String
+  UF             String
+  customerId     String? @default("")
+  subscriptionId String? @default("")
+
+  cpfOrCnpj String? @default("")
+  crn       String? @default("")
+  crnCode   String? @default("CRN-1")
+
+  fullAdrees     String?  @default("")
+  about          String?  @default("")
+  clinicPhotos   String[] @default([])
+  profilePhoto   String?  @default("")
+  signaturePhoto String?  @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Log            Log[]
+  LogError       LogError[]
+  preferences    Preferences?
+  patients       Patient[]
+  schedule       Event[]
+  questionary    Questionary[]
+  AnonymousEvent AnonymousEvent[]
+  //FoodPlans      FoodPlan[]
+  Tables         Tables[]
+  PublicSchedule PublicSchedule?
+  Finances       Finance[]
+  examesList     LaboratoryExam?
+
+  ListMeals ListMeals?
+  MyFoods   MyFoods?
+  Scholls   Scholl[]
+  Recipe    Recipe[]
+}
+
+model Scholl {
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  state           String
+  city            String
+  phone           String
+  email           String
+  address         String
+  classNames      String[]          @default([])
+  observation     String            @default("")
+  students        Student[]
+  cardapios       Cardapio[]
+  User            User?             @relation(fields: [userId], references: [id])
+  userId          String?           @db.ObjectId
+  PreparationCost PreparationCost[]
+  CalenderScholl  CalenderScholl?
+}
+
+model Student {
+  id                   String                 @id @default(auto()) @map("_id") @db.ObjectId
+  name                 String
+  biologicalSex        String                 @default("Masculino")
+  height               Float
+  weight               Float
+  birthday             String
+  Scholl               Scholl?                @relation(fields: [schollId], references: [id])
+  schollId             String                 @db.ObjectId
+  class                String?                @default("")
+  ChildGrowthStandards ChildGrowthStandards[]
+  Vaccine              Vaccine[]
+  Annotation           Annotation[]
+  Medicine             Medicine[]
+}
+
+model Vaccine {
+  id             String  @id @default(auto()) @map("_id") @db.ObjectId
+  BCG            Boolean @default(false)
+  hepatite1      Boolean @default(false)
+  hepatite2      Boolean @default(false)
+  hepatite3      Boolean @default(false)
+  tetravalente1  Boolean @default(false)
+  tetravalente2  Boolean @default(false)
+  tetravalente3  Boolean @default(false)
+  VOP1           Boolean @default(false)
+  VOP2           Boolean @default(false)
+  VOP3           Boolean @default(false)
+  VORH1          Boolean @default(false)
+  VORH2          Boolean @default(false)
+  Meningococica1 Boolean @default(false)
+  Meningococica2 Boolean @default(false)
+
+  febreAmarela1 Boolean  @default(false)
+  febreAmarela2 Boolean  @default(false)
+  VOP4          Boolean  @default(false)
+  SRC1          Boolean  @default(false)
+  SRC2          Boolean  @default(false)
+  DTP1          Boolean  @default(false)
+  DTP2          Boolean  @default(false)
+  patient       Patient? @relation(fields: [patientId], references: [id])
+  student       Student? @relation(fields: [studentId], references: [id])
+  patientId     String?  @db.ObjectId
+  studentId     String?  @db.ObjectId
+}
+
+model Annotation {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String?  @db.ObjectId
+  studentId String?  @db.ObjectId
+  patient   Patient? @relation(fields: [patientId], references: [id])
+  student   Student? @relation(fields: [studentId], references: [id])
+  text      String
+  title     String
+}
+
+model Medicine {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId      String?  @db.ObjectId
+  studentId      String?  @db.ObjectId
+  patient        Patient? @relation(fields: [patientId], references: [id])
+  student        Student? @relation(fields: [studentId], references: [id])
+  name           String
+  frequecyNumber String
+  frequencyType  String
+  dosage         String
+  observation    String?  @default("")
+  hour           String?  @default("")
+  amount         String
+}
+
+model CalenderScholl {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  scholl   Scholl @relation(fields: [schollId], references: [id])
+  schollId String @unique @db.ObjectId
+  events   Json[] @default([])
+  boards   Json[] @default([])
+}

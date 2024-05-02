@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "sourceMap": true,
+      "outDir": "dist",
+     "target": "ES2020",
+     "module": "NodeNext",
+    "moduleResolution": "node",
+     "resolveJsonModule": true,
+     "paths": {
+       "firebase-admin": ["./node_modules/firebase-admin"]
+     },
+      "strict": true,
+      "lib": ["esnext"],
+      "esModuleInterop": true
+    }
+  }
