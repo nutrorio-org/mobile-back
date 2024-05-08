@@ -18,6 +18,18 @@ model Prescricao {
   patientId   String  @db.ObjectId
 }
 
+model DiarioAlimentar {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  patient     Patient  @relation(fields: [patientId], references: [id])
+  patientId   String   @db.ObjectId
+  title       String
+  date        String
+  description String
+  photos      String[] @default([])
+  comments String? @default("")
+  emoji String? @default("")
+}
+
 model AnonymousEvent {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   userId   String  @db.ObjectId
@@ -284,8 +296,9 @@ model Patient {
   Medicine             Medicine[]
   Prescricao           Prescricao[]
 
-  codeApp String
-  password String @default("")
+  codeApp         String
+  password        String            @default("")
+  DiarioAlimentar DiarioAlimentar[]
 }
 
 model Preferences {

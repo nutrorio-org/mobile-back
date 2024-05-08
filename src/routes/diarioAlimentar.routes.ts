@@ -19,9 +19,6 @@ diarioAlimentarRoutes.use((req: Request, res: Response, next) => {
 
   next();
 });
-const server = new ExpressServer();
-diarioAlimentarRoutes.post(
-  '/',
-  // server.upload.single('foto'),
-  diarioController.upload
-);
+diarioAlimentarRoutes.post('/:id', diarioController.create);
+diarioAlimentarRoutes.get('/:id', diarioController.get);
+diarioAlimentarRoutes.put('/:id', diarioController.update);
