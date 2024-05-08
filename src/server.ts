@@ -25,6 +25,7 @@ export class ExpressServer {
     this.app.use(path, routes);
   }
   listen() {
+    this.app.get('/', (req, res) => res.send('test'));
     this.app.listen(this.PORT, () => {
       console.log(`Server is running on http://localhost:${this.PORT}`);
     });
