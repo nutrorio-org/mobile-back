@@ -23,7 +23,7 @@ model DiarioAlimentar {
   patient     Patient  @relation(fields: [patientId], references: [id])
   patientId   String   @db.ObjectId
   title       String
-  date        String
+  date        Int
   description String
   photos      String[] @default([])
   comments String? @default("")

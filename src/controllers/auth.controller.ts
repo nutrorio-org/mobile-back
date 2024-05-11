@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 
 export class AuthController {
   async login(req: Request, res: Response) {
+    console.log(req.body);
     try {
       const data = LoginPatient.parse(req.body);
       const { cpf, password } = data;
