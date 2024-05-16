@@ -23,11 +23,11 @@ model DiarioAlimentar {
   patient     Patient  @relation(fields: [patientId], references: [id])
   patientId   String   @db.ObjectId
   title       String
-  date        Int
+  date        String
   description String
   photos      String[] @default([])
   comments String? @default("")
-  emoji String? @default("")
+  emoji String? @default("none")
 }
 
 model AnonymousEvent {

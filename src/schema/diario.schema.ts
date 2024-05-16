@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const diarioSchema = z.object({
   id: z.string().optional(),
-  date: z.number(),
+  date: z.string(),
   title: z.string(),
   description: z.string().optional(),
   photos: z.string().array().optional(),
