@@ -1,7 +1,7 @@
-import { Diario } from '../../schema/diario.schema';
+import { UpdateDiario } from '../../schema/diario.schema';
 import { prisma } from '../prisma';
 
-export async function updateDiarioAlimentar(diario: Diario, id: string) {
+export async function updateDiarioAlimentar(diario: UpdateDiario, id: string) {
   try {
     return await prisma.diarioAlimentar.update({
       where: {

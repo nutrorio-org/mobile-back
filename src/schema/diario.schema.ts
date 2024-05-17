@@ -9,4 +9,11 @@ export const diarioSchema = z.object({
   comments: z.string().optional(),
   emoji: z.enum(['like', 'heart', 'hand', 'none']).optional().default('none'),
 });
+export const updateDiarioSchema = z.object({
+  date: z.string(),
+  title: z.string(),
+  description: z.string(),
+  photos: z.string().array().optional(),
+});
 export type Diario = z.infer<typeof diarioSchema>;
+export type UpdateDiario = z.infer<typeof updateDiarioSchema>;

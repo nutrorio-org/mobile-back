@@ -21,5 +21,5 @@ diarioAlimentarRoutes.use((req: Request, res: Response, next) => {
 });
 diarioAlimentarRoutes.post('/:id', diarioController.create);
 diarioAlimentarRoutes.get('/:id', diarioController.get);
-diarioAlimentarRoutes.put('/:id', diarioController.update);
+diarioAlimentarRoutes.put('/', diarioController.update);
 diarioAlimentarRoutes.delete('/:id', diarioController.del);
