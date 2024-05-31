@@ -30,6 +30,13 @@ model DiarioAlimentar {
   emoji String? @default("none")
 }
 
+model QuestionarioPendente {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  questionarioId String
+  patientId String
+  
+}
+
 model AnonymousEvent {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
   userId   String  @db.ObjectId

@@ -20,3 +20,7 @@ questionariosRoutes.use((req: Request, res: Response, next) => {
 });
 questionariosRoutes.get('/:patientId', questionariosController.list);
 questionariosRoutes.get('/find/:id', questionariosController.find);
+questionariosRoutes.get(
+  '/pending/:patientId',
+  questionariosController.getQuestionsPendents
+);

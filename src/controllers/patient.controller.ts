@@ -1,9 +1,10 @@
 import { Token } from '../class/Token';
 import {
   NutriInfo,
-  nutriResponse,
+  alterPasswordSchema,
   patientResponse,
 } from '../schema/patient.schema';
+import { alterPassword } from '../services/patient/alterPassword';
 import { getNutri } from '../services/patient/getNutri';
 import { getPatient } from '../services/patient/getPatient';
 import { Request, Response } from 'express';
@@ -52,6 +53,21 @@ export class PatientController {
         .send({ message: 'Erro ao buscar os dados do usuario' });
     } catch (error) {
       res.status(500).send({ message: 'Erro ao buscar os dados do usuario' });
+    }
+  }
+  async updatePassword(req: Request, res: Response) {
+    try {
+      const { password } = alterPasswordSchema.parse(req.body);
+      const result = await alterPassword(req.params.patientId, password);
+      if (!result)
+        return res
+          .status(400)
+          .send({ message: 'Erro ao atualizar sua senhas' });
+      res
+        .status(200)
+        .send({ message: 'Sua senha foi atualizada com sucesso!' });
+    } catch (error) {
+      return res.status(500).send({ message: 'Erro no servidor' });
     }
   }
 }

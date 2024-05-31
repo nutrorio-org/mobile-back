@@ -1,10 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { Token } from '../class/Token';
-import { PatientController } from '../controllers/patient.controller';
+import { PlanoAlimentarController } from '../controllers/planoAlimentar.controller';
 
-export const patientRoutes = Router();
-const patientController = new PatientController();
-patientRoutes.use((req: Request, res: Response, next) => {
+export const planoAlimentarRoutes = Router();
+const planoAlimentarController = new PlanoAlimentarController();
+planoAlimentarRoutes.use((req: Request, res: Response, next) => {
   // Extraindo o token do cabeçalho da requisição
   const token = req.headers['authorization'];
   // Verificando se o token foi fornecido
@@ -20,9 +20,4 @@ patientRoutes.use((req: Request, res: Response, next) => {
 
   next();
 });
-patientRoutes.get('/', patientController.get);
-
-patientRoutes.get('/nutri/:id', patientController.getNutricionista);
-patientRoutes.post('/password/:patientId', patientController.updatePassword);
-
-//app.use('/api/protegida', protectedRouter);
+planoAlimentarRoutes.get('/:patientId', planoAlimentarController.list);

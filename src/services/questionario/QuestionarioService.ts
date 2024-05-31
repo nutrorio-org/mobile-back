@@ -23,4 +23,37 @@ export class QuestionarioService {
       return null;
     }
   }
+  async getQuestiosPendents(patientId: string) {
+    try {
+      const questionarioPendente = await prisma.questionarioPendente.findMany({
+        where: {
+          patientId,
+        },
+      });
+
+      const questionarioPromises = questionarioPendente.map(async (q) => {
+        const res = await prisma.questionary.findFirst({
+          where: {
+            id: q.questionarioId,
+          },
+        });
+        if (res) {
+          return {
+            ...q,
+            title: res.title,
+          };
+        }
+        return null;
+      });
+
+      // Aguarda todas as promessas serem resolvidas e filtra os valores nulos
+      const questionario = (await Promise.all(questionarioPromises)).filter(
+        Boolean
+      );
+
+      return questionario;
+    } catch (error) {
+      return [];
+    }
+  }
 }

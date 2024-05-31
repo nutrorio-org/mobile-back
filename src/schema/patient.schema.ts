@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { Crypto } from '../class/Crypto';
 
 export const patientResponse = z.object({
   id: z.string(),
@@ -24,5 +25,8 @@ export const nutriResponse = z.object({
   fullAdrees: z.string().optional(),
   crnCode: z.string().optional(),
   crn: z.string().optional(),
+});
+export const alterPasswordSchema = z.object({
+  password: z.string().refine((v) => Crypto.generateHash(v)),
 });
 export type NutriInfo = z.infer<typeof nutriResponse>;

@@ -27,4 +27,16 @@ export class QuestionarioController {
       res.send('error em questionario');
     }
   }
+  async getQuestionsPendents(req: Request, res: Response) {
+    try {
+      const result = await questionarioService.getQuestiosPendents(
+        req.params.patientId
+      );
+      console.log(result);
+      res.send(result);
+    } catch (error) {
+      console.log(error);
+      res.send('error em buscar questionario pendentes');
+    }
+  }
 }
