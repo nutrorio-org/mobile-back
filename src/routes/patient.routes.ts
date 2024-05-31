@@ -24,5 +24,3 @@ patientRoutes.get('/', patientController.get);
 
 patientRoutes.get('/nutri/:id', patientController.getNutricionista);
 patientRoutes.post('/password/:patientId', patientController.updatePassword);
-
-//app.use('/api/protegida', protectedRouter);
