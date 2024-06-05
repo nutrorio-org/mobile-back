@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { Token } from '../class/Token';
-import { PlanoAlimentarController } from '../controllers/planoAlimentar.controller';
+import { FoodPlanOrder } from '../application/FoodPlanOrder';
+import { FoodPlanService } from '../services/FoodPlanService';
 
 export const planoAlimentarRoutes = Router();
-const planoAlimentarController = new PlanoAlimentarController();
+const foodPlanService = new FoodPlanService();
+const foodPlanOrder = new FoodPlanOrder(foodPlanService);
 planoAlimentarRoutes.use((req: Request, res: Response, next) => {
   // Extraindo o token do cabeçalho da requisição
   const token = req.headers['authorization'];
@@ -20,4 +22,7 @@ planoAlimentarRoutes.use((req: Request, res: Response, next) => {
 
   next();
 });
-planoAlimentarRoutes.get('/:patientId', planoAlimentarController.list);
+planoAlimentarRoutes.get('/:patientId', async (req, res) => {
+  const foodPlans = await foodPlanOrder.list(req.params.patientId);
+  res.send(foodPlans);
+});

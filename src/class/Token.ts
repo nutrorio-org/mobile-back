@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../schema/enviroments.schema';
+import { JWT_SECRET } from '../enviroments';
 export interface PatientToken {
   cpf: string;
   id: string;
 }
 export class Token {
-  generate(cpf: string, id: string) {
+  static generate(cpf: string, id: string) {
     const token = jwt.sign({ cpf, id }, JWT_SECRET);
     return token;
   }

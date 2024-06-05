@@ -1,4 +1,3 @@
-// const bcrypt = require('bcrypt');
 import bcrypt from 'bcrypt';
 const saltRounds = 10; // Define o custo do processamento do salt
 export class Crypto {

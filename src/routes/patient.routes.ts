@@ -1,9 +1,19 @@
 import { Router, Request, Response } from 'express';
 import { Token } from '../class/Token';
-import { PatientController } from '../controllers/patient.controller';
+import { PatientInformation } from '../application/PatientInformation';
+import { PatientCredentials } from '../application/PatientCredentials';
+import { PatientInput } from '../http/validations/PatientInputs';
+import { ExpressResponse } from '../http/ExpressResponse';
+import { PatientError } from '../errors/patient.errors';
+import { PatientServices } from '../services/PatientServices';
 
 export const patientRoutes = Router();
-const patientController = new PatientController();
+const patientServices = new PatientServices();
+const patientInformation = new PatientInformation(patientServices);
+const patientCredentials = new PatientCredentials(patientServices);
+const patientInput = new PatientInput();
+const expressResponse = new ExpressResponse();
+
 patientRoutes.use((req: Request, res: Response, next) => {
   // Extraindo o token do cabeçalho da requisição
   const token = req.headers['authorization'];
@@ -20,7 +30,36 @@ patientRoutes.use((req: Request, res: Response, next) => {
 
   next();
 });
-patientRoutes.get('/', patientController.get);
+patientRoutes.get('/', async (req: Request, res: Response) => {
+  const response = await patientInformation.get(
+    req.headers['authorization'] ?? ''
+  );
+  if (!response)
+    return expressResponse.send(res, 400, PatientError.PatientNotFound);
+  res.send(response);
+});
 
-patientRoutes.get('/nutri/:id', patientController.getNutricionista);
-patientRoutes.post('/password/:patientId', patientController.updatePassword);
+patientRoutes.get('/nutri/:id', async (req: Request, res: Response) => {
+  const id = patientInput.ID(req.params.id);
+  if (!id) return expressResponse.send(res, 400, PatientError.InvalidID);
+
+  const response = await patientInformation.getNutricionista(id);
+  if (!response)
+    return expressResponse.send(res, 400, PatientError.NutriNotFound);
+  res.send(response);
+});
+patientRoutes.post(
+  '/password/:patientId',
+  async (req: Request, res: Response) => {
+    const password = patientInput.Password(req.body);
+    if (!password)
+      return expressResponse.send(res, 400, PatientError.InvalidPassword);
+    const response = await patientCredentials.updatePassword(
+      password,
+      req.params.patientId
+    );
+    if (!response)
+      return expressResponse.send(res, 400, PatientError.FailedPasswordUpdate);
+    res.send(response);
+  }
+);

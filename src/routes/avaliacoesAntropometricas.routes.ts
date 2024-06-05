@@ -1,9 +1,14 @@
 import { Router, Request, Response } from 'express';
 import { Token } from '../class/Token';
-import { AvaliacaoAntropometricaController } from '../controllers/avaliacao.controller';
+
+import { AnthropometricExaminationOrder } from '../application/AnthropometricExaminationOrder';
+import { AnthropometricExamService } from '../services/AnthropometricExamService';
 
 export const avaliacaoAntropometricaRoutes = Router();
-const avaliacaoController = new AvaliacaoAntropometricaController();
+const anthropometricExamService = new AnthropometricExamService();
+const anthropometricExamOrder = new AnthropometricExaminationOrder(
+  anthropometricExamService
+);
 avaliacaoAntropometricaRoutes.use((req: Request, res: Response, next) => {
   const token = req.headers['authorization'];
   if (!token) {
@@ -18,5 +23,11 @@ avaliacaoAntropometricaRoutes.use((req: Request, res: Response, next) => {
 
   next();
 });
-avaliacaoAntropometricaRoutes.get('/:patientId', avaliacaoController.list);
-avaliacaoAntropometricaRoutes.get('/find/:id', avaliacaoController.findById);
+avaliacaoAntropometricaRoutes.get('/:patientId', async (req, res) => {
+  const result = await anthropometricExamOrder.list(req.params.patientId);
+  res.send(result);
+});
+avaliacaoAntropometricaRoutes.get('/find/:id', async (req, res) => {
+  const result = await anthropometricExamOrder.findById(req.params.id);
+  res.send(result);
+});

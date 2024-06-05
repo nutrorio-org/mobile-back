@@ -1,9 +1,11 @@
 import { Router, Request, Response } from 'express';
 import { Token } from '../class/Token';
-import { QuestionarioController } from '../controllers/questionario.controller';
+import { QuestionaryOrder } from '../application/QuestionaryOrder';
+import { QuestionaryServices } from '../services/QuestionaryService';
 
 export const questionariosRoutes = Router();
-const questionariosController = new QuestionarioController();
+const questionaryService = new QuestionaryServices();
+const questionarioOrder = new QuestionaryOrder(questionaryService);
 questionariosRoutes.use((req: Request, res: Response, next) => {
   const token = req.headers['authorization'];
   if (!token) {
@@ -18,9 +20,15 @@ questionariosRoutes.use((req: Request, res: Response, next) => {
 
   next();
 });
-questionariosRoutes.get('/:patientId', questionariosController.list);
-questionariosRoutes.get('/find/:id', questionariosController.find);
-questionariosRoutes.get(
-  '/pending/:patientId',
-  questionariosController.getQuestionsPendents
-);
+questionariosRoutes.get('/:patientId', async (req, res) => {
+  const result = await questionarioOrder.getDescriptions(req.params.patientId);
+  res.send(result);
+});
+questionariosRoutes.get('/find/:id', async (req, res) => {
+  const result = await questionarioOrder.getCompleted(req.params.id);
+  res.send(result);
+});
+questionariosRoutes.get('/pending/:patientId', async (req, res) => {
+  const pendings = await questionarioOrder.getPending(req.params.patientId);
+  res.send(pendings);
+});

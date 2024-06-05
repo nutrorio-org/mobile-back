@@ -1,8 +1,5 @@
 import { FirebaseOptions, initializeApp } from 'firebase/app';
-import {
-  FIREBASE_APP_ID,
-  FIREBASE_API_KEY,
-} from '../../schema/enviroments.schema';
+import { FIREBASE_APP_ID, FIREBASE_API_KEY } from '../../enviroments';
 
 const config: FirebaseOptions = {
   apiKey: FIREBASE_API_KEY,

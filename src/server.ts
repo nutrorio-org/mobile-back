@@ -2,7 +2,7 @@ import express, { Express, Router } from 'express';
 import multer from 'multer';
 
 import cookieParser from 'cookie-parser';
-import { PORT } from './schema/enviroments.schema';
+import { PORT } from './enviroments';
 import cors from 'cors'; // Import cors package
 
 export class ExpressServer {
