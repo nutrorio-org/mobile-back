@@ -8,20 +8,17 @@ export class PatientCredentials {
     this.patientDatabase = patientDatabase;
   }
   async updatePassword(password: string, patientId: string) {
-    const passwordEncrypted = await this.encryptPassword(password);
+    const passwordEncrypted = await this.validatePassword(password);
     if (passwordEncrypted) {
-      return await this.patientDatabase.alterPassword(
-        patientId,
-        passwordEncrypted
-      );
+      return await this.patientDatabase.alterPassword(patientId, password);
     }
     return false;
   }
-  private async encryptPassword(password: string) {
-    const isValidPassword = await this.validatePassword(password);
-    if (isValidPassword) return await Crypto.generateHash(password);
-    else return false;
-  }
+  // private async encryptPassword(password: string) {
+  //   const isValidPassword = await this.validatePassword(password);
+  //   if (isValidPassword) return await Crypto.generateHash(password);
+  //   else return false;
+  // }
   private async validatePassword(password: string) {
     const validateSchema = z.string().min(8, { message: 'min 8 caracteres' });
     const result = validateSchema.safeParse(password);

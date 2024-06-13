@@ -48,18 +48,19 @@ patientRoutes.get('/nutri/:id', async (req: Request, res: Response) => {
     return expressResponse.send(res, 400, PatientError.NutriNotFound);
   res.send(response);
 });
-patientRoutes.post(
+patientRoutes.put(
   '/password/:patientId',
   async (req: Request, res: Response) => {
-    const password = patientInput.Password(req.body);
-    if (!password)
-      return expressResponse.send(res, 400, PatientError.InvalidPassword);
+    console.log(req.body, req.params);
+
     const response = await patientCredentials.updatePassword(
-      password,
+      req.body.password,
       req.params.patientId
     );
     if (!response)
       return expressResponse.send(res, 400, PatientError.FailedPasswordUpdate);
+    console.log('@');
+
     res.send(response);
   }
 );

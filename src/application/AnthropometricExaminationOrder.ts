@@ -1,7 +1,8 @@
-import { AnthropometricExamService } from '../services/AnthropometricExamService';
+import { AnthropometricExamDatabase } from '../interfaces/AnthropometricExamDatabase';
 
 export class AnthropometricExaminationOrder {
-  constructor(readonly anthropometricExamService: AnthropometricExamService) {
+  private anthropometricExamService: AnthropometricExamDatabase;
+  constructor(anthropometricExamService: AnthropometricExamDatabase) {
     this.anthropometricExamService = anthropometricExamService;
   }
   async list(patientId: string) {
