@@ -3,6 +3,15 @@ import { AnthropometricExamDatabase } from '../interfaces/AnthropometricExamData
 import { prisma } from './prisma';
 
 export class AnthropometricExamService implements AnthropometricExamDatabase {
+  async findGraphicList(itemsId: string[]): Promise<any> {
+    return await prisma.exameAvaliacaoAntropometrica.findMany({
+      where: {
+        id: {
+          in: itemsId,
+        },
+      },
+    });
+  }
   async list(patientId: string): Promise<AnthropometricExam[]> {
     try {
       const result = await prisma.exameAvaliacaoAntropometrica.findMany({

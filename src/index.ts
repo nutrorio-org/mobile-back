@@ -1,5 +1,5 @@
 import { authRoutes } from './routes/auth.routes';
-import { avaliacaoAntropometricaRoutes } from './routes/avaliacoesAntropometricas.routes';
+import { routes as avaliacaoAntropometricaRoutes } from './routes/avaliacoesAntropometricas.routes';
 import { diarioAlimentarRoutes } from './routes/diarioAlimentar.routes';
 import { patientRoutes } from './routes/patient.routes';
 import { planoAlimentarRoutes } from './routes/planoAlimentar.routes';
