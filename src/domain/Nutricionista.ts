@@ -27,10 +27,17 @@ export class Nutricionista {
     this.cpfOrCnpj = nutricionista.cpfOrCnpj;
     this.name = nutricionista.name;
     this.email = nutricionista.email;
-    this.phone = nutricionista.phone;
+    this.phone = this.sanitizeNumberInput(nutricionista.phone);
     this.fullAdrees = nutricionista.fullAdrees;
     this.crnCode = nutricionista.crnCode;
     this.crn = nutricionista.crn;
+  }
+  private sanitizeNumberInput(input: string) {
+    // Remove espaços vazios
+    let sanitizedInput = input.replace(/\s+/g, '');
+    // Remove qualquer coisa que não seja número
+    sanitizedInput = sanitizedInput.replace(/\D+/g, '');
+    return `55${sanitizedInput}`;
   }
 
   // Método estático para criar uma instância da classe Nutricionista

@@ -31,35 +31,24 @@ patientRoutes.use((req: Request, res: Response, next) => {
   next();
 });
 patientRoutes.get('/', async (req: Request, res: Response) => {
-  const response = await patientInformation.get(
+  const patient = await patientInformation.get(
     req.headers['authorization'] ?? ''
   );
-  if (!response)
+  if (!patient)
     return expressResponse.send(res, 400, PatientError.PatientNotFound);
-  res.send(response);
+  const nutricionista = await patientInformation.getNutricionista(patient.id);
+  res.send({ ...patient, nutricionista: { ...nutricionista } });
 });
 
-patientRoutes.get('/nutri/:id', async (req: Request, res: Response) => {
-  const id = patientInput.ID(req.params.id);
-  if (!id) return expressResponse.send(res, 400, PatientError.InvalidID);
-
-  const response = await patientInformation.getNutricionista(id);
-  if (!response)
-    return expressResponse.send(res, 400, PatientError.NutriNotFound);
-  res.send(response);
-});
 patientRoutes.put(
   '/password/:patientId',
   async (req: Request, res: Response) => {
-    console.log(req.body, req.params);
-
     const response = await patientCredentials.updatePassword(
       req.body.password,
       req.params.patientId
     );
     if (!response)
       return expressResponse.send(res, 400, PatientError.FailedPasswordUpdate);
-    console.log('@');
 
     res.send(response);
   }
