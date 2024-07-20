@@ -55,6 +55,7 @@ patientRoutes.put(
 );
 patientRoutes.put('/notificationApp', async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     const response = await patientServices.updateNotificationToken(
       req.body.patientId,
       req.body.token
