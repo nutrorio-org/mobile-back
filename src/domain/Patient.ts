@@ -12,10 +12,11 @@ const PatientSchema = z.object({
   height: z.number(),
   age: z.number(),
   bodyMassIndex: z.number(),
-  biologicalSex: z.enum(['Feminino', 'Masculino']),
+  biologicalSex: z.string(),
   isPregnant: z.boolean().default(false),
   weeksPregnant: z.number().optional(),
   weightBeforePregnancy: z.number().optional(),
+  notificationToken: z.string(),
 });
 type PatientType = z.infer<typeof PatientSchema>;
 
@@ -31,7 +32,9 @@ export class Patient {
   height: number;
   age: number;
   bodyMassIndex: number;
-  biologicalSex: 'Feminino' | 'Masculino';
+  biologicalSex: string;
+  notificationToken: string;
+
   isPregnant: boolean;
   weeksPregnant?: number;
   weightBeforePregnancy?: number;
@@ -52,6 +55,7 @@ export class Patient {
     this.isPregnant = patient.isPregnant;
     this.weeksPregnant = patient.weeksPregnant;
     this.weightBeforePregnancy = patient.weightBeforePregnancy;
+    this.notificationToken = patient.notificationToken;
   }
 
   // Método estático para criar uma instância da classe Patient

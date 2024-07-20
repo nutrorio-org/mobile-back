@@ -53,3 +53,21 @@ patientRoutes.put(
     res.send(response);
   }
 );
+patientRoutes.put('/notificationApp', async (req: Request, res: Response) => {
+  try {
+    const response = await patientServices.updateNotificationToken(
+      req.body.patientId,
+      req.body.token
+    );
+    if (!response)
+      return expressResponse.send(
+        res,
+        400,
+        PatientError.FailedInUpdateAppToken
+      );
+
+    res.send(response);
+  } catch (error) {
+    return expressResponse.send(res, 500, PatientError.FailedInUpdateAppToken);
+  }
+});

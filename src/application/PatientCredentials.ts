@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { Crypto } from '../class/Crypto';
 import { PatientDatabase } from '../interfaces/PatientDatabase';
 import { Token } from '../class/Token';
+import { Patient } from '../domain/Patient';
 
 export class PatientCredentials {
   constructor(readonly patientDatabase: PatientDatabase) {
@@ -27,18 +28,19 @@ export class PatientCredentials {
   }
   async login(password: string, cpf: string) {
     if (password.length == 6) {
-      const result = await this.patientDatabase.LoginWithCode(cpf, password);
-      if (!result) return null;
-      const token = Token.generate(result.cpf, result.id);
-      return { token };
-    } else {
-      const result = await this.patientDatabase.LoginWithPassword(
+      const patient: Patient | null = await this.patientDatabase.LoginWithCode(
         cpf,
         password
       );
-      if (!result) return null;
-      const token = Token.generate(result.cpf, result.id);
-      return { token };
+      if (!patient) return null;
+      const token = Token.generate(patient.cpf, patient.id);
+      return { token, patient };
+    } else {
+      const patient: Patient | null =
+        await this.patientDatabase.LoginWithPassword(cpf, password);
+      if (!patient) return null;
+      const token = Token.generate(patient.cpf, patient.id);
+      return { token, patient };
     }
   }
 }

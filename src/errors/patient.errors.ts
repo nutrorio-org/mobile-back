@@ -8,4 +8,5 @@ export enum PatientError {
   PatientNotFound = 'Erro ao buscar dados do paciente',
   InvalidFields = 'body invalido',
   FailedLogin = 'Erro ao efetuar o login',
+  FailedInUpdateAppToken = 'Erro ao atualizar o token de notificação',
 }
