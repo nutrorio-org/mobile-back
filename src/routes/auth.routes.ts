@@ -5,7 +5,7 @@ import { PatientInput } from '../http/validations/PatientInputs';
 import { ExpressResponse } from '../http/ExpressResponse';
 import { PatientError } from '../errors/patient.errors';
 import { NotificationService } from '../services/NotificationService';
-import { NotificationApp } from '../domain/NotificationApp';
+
 const patientServices = new PatientServices();
 const patientCredentials = new PatientCredentials(patientServices);
 const expressResponse = new ExpressResponse();
@@ -19,13 +19,9 @@ authRoutes.post('/api/login', async (req, res) => {
   if (!result) return expressResponse.send(res, 400, PatientError.FailedLogin);
   res.send(result);
 });
-authRoutes.get('/api/test', async (req, res) => {
-  const result = await patientServices.findAllNotifications();
-  if (!result) res.send('erro');
-
-  await NotificationService.sendNotifications(
-    result as NotificationApp[],
-    'Diario'
-  );
-  res.send(result);
+authRoutes.post('/api/test', async (req, res) => {
+  const patientServices = new PatientServices();
+  const notifications = await patientServices.findAllNotifications();
+  await NotificationService.sendNotifications(notifications ?? [], 'Diario');
+  res.send('ok');
 });

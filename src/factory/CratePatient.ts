@@ -14,5 +14,6 @@ export function CreatePatient() {
     phone: '51986861089',
     weight: 70,
     id: '123456',
+    notificationToken: '',
   });
 }
