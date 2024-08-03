@@ -6,7 +6,11 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
-
+model AppVersion{
+    id          String  @id @default(auto()) @map("_id") @db.ObjectId
+    version String @default("2.2.4")
+    indentify String @default("mobile-version") @unique
+}
 model Prescricao {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
   titulo      String

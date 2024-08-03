@@ -1,5 +1,4 @@
 import express, { Express, Router } from 'express';
-import multer from 'multer';
 
 import cookieParser from 'cookie-parser';
 import { PORT } from './enviroments';
@@ -15,7 +14,6 @@ export class ExpressServer {
     this.app.use(express.json());
     this.app.use(cookieParser());
     this.app.use(cors()); // Use cors middleware
-    this.upload = multer({ dest: 'uploads/' }); // Define o diretório de destino para os uploads
   }
 
   addRouter(routes: Router) {
